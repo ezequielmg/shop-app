@@ -2,13 +2,13 @@ openapi: 3.0.3
 info:
   title: Shop App - OpenAPI 3.0
   description: |-
-    OpenAPI definition for Shop App
+    OpenAPI definition for Shop App - This is just a sample (not complete spec) for demo purposes
     
     Some useful links:
-    - [Shop App repository](https://github.com/swagger-api/swagger-petstore)
+    - [Shop App repository](https://github.com/ezequielmg/shop-app)
   version: 0.1.0
 servers:
-  - url: https://petstore3.swagger.io/api/v3
+  - url: https://<YOUR_API_GATEWAY_ID>.execute-api.eu-east-1.amazonaws.com/dev
 tags:
   - name: products
     description: Products managed by the application
