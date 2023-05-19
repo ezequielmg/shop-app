@@ -102,9 +102,6 @@ components:
         description:
           type: string
           example: Car toy
-        count:
-          type: number
-          example: 5
   requestBodies:
     Product:
       description: Product object that needs to be added to the shop

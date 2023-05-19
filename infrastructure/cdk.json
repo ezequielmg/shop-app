@@ -3,7 +3,7 @@
   "versionReporting": false,
   "watch": {
     "include": [
-      "**"
+      "lib/packages/compute/lambdas/**"
     ],
     "exclude": [
       "README.md",

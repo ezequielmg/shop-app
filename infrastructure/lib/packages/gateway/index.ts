@@ -6,9 +6,14 @@ import {
 import { HttpMethod } from "aws-cdk-lib/aws-lambda";
 import { Construct } from "constructs";
 import { ComputeConstruct, LambdaNames } from "../compute";
+import { TTables } from "../persistance";
+
+type TGatewayConstructProps = {
+  tables: TTables
+}
 
 export class GatewayConstruct extends Construct {
-  constructor(scope: Construct, id: string) {
+  constructor(scope: Construct, id: string, props: TGatewayConstructProps) {
     super(scope, id);
 
     // -> API
@@ -21,19 +26,33 @@ export class GatewayConstruct extends Construct {
       }
     })
 
+    const { tables } = props
+
     // /products
     const products = api.root.addResource("products");
+      // GET
     products.addMethod(HttpMethod.GET, new LambdaIntegration(
       new ComputeConstruct(this, 'productsAll', {
-        handlerPath: LambdaNames.PRODUCTS_ALL
+        handlerPath: LambdaNames.PRODUCTS_GET_ALL,
+        tables
+      }).getLambdaFunction()
+    ));
+      // POST
+    products.addMethod(HttpMethod.POST, new LambdaIntegration(
+      new ComputeConstruct(this, 'productsCreate', {
+        handlerPath: LambdaNames.PRODUCTS_CREATE,
+        tables
       }).getLambdaFunction()
     ));
 
+
     // /products/{id}
     const product = products.addResource("{id}");
+      // GET
     product.addMethod(HttpMethod.GET, new LambdaIntegration(
-      new ComputeConstruct(this, 'productsById', {
-        handlerPath: LambdaNames.PRODUCTS_BY_ID
+      new ComputeConstruct(this, 'productsGetById', {
+        handlerPath: LambdaNames.PRODUCTS_GET_BY_ID,
+        tables
       }).getLambdaFunction()
     ));
   }
