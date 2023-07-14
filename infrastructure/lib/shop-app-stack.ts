@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import { WebsiteConstruct } from './packages/website';
 import { GatewayConstruct } from './packages/gateway';
 import { PersistanceConstruct } from './packages/persistance';
+import { AuthorizationConstruct } from './packages/authorization';
 
 export class ShopAppStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -14,9 +15,13 @@ export class ShopAppStack extends Stack {
     // Persistance (DynamoDB)
     const persistance = new PersistanceConstruct(this, 'persistance')
 
+    // Authorizer (Lambda)
+    const authorization = new AuthorizationConstruct(this, 'authorization')
+
     // Gateway (API Gateway + Lambda)
     const gateway = new GatewayConstruct(this, 'gateway', {
-      tables: persistance.tables
+      tables: persistance.tables,
+      authorizer: authorization.authorizer
     })
   }
 }

@@ -1,5 +1,7 @@
 import {
+  AuthorizationType,
   Cors,
+  IAuthorizer,
   LambdaIntegration,
   RestApi,
 } from "aws-cdk-lib/aws-apigateway";
@@ -9,12 +11,15 @@ import { ComputeConstruct, LambdaNames } from "../compute";
 import { TTables } from "../persistance";
 
 type TGatewayConstructProps = {
-  tables: TTables
+  tables: TTables,
+  authorizer: IAuthorizer
 }
 
 export class GatewayConstruct extends Construct {
   constructor(scope: Construct, id: string, props: TGatewayConstructProps) {
     super(scope, id);
+
+    const { tables, authorizer } = props
 
     // -> API
     const api = new RestApi(this, 'restApi', {
@@ -23,10 +28,12 @@ export class GatewayConstruct extends Construct {
       },
       deployOptions: {
         stageName: 'dev'
-      }
+      },
+      defaultMethodOptions: {
+        authorizer,
+        authorizationType: AuthorizationType.CUSTOM
+      },
     })
-
-    const { tables } = props
 
     // /products
     const products = api.root.addResource("products");
